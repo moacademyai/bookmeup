@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "BookMeUp",
+      "path": "ios-bookmeup",
+      "framework": "swift"
+    }
+  ],
+  "$schema": "https://rork.com/schema/rork.json"
+}
