@@ -654,8 +654,18 @@ final class BookMeUpStore {
 
     // MARK: - Mutations
 
+    /// Creates a client's appointment.
+    ///
+    /// `specialistName` is the master the client chose. It defaults to the person the
+    /// business is registered under, so a one-chair studio books exactly as before.
     @discardableResult
-    func book(provider: Provider, service: ServiceOffering, at date: Date, clientName: String? = nil) -> Booking {
+    func book(
+        provider: Provider,
+        service: ServiceOffering,
+        at date: Date,
+        clientName: String? = nil,
+        specialistName: String? = nil
+    ) -> Booking {
         let previous = bookings
             .filter { $0.clientName == (clientName ?? self.clientName) && $0.providerID == provider.id }
             .sorted { $0.start > $1.start }
@@ -666,7 +676,7 @@ final class BookMeUpStore {
         let booking = Booking(
             providerID: provider.id,
             providerName: provider.name,
-            specialistName: provider.specialistName,
+            specialistName: specialistName ?? provider.specialistName,
             address: provider.address,
             imageName: provider.imageName,
             serviceName: service.name,

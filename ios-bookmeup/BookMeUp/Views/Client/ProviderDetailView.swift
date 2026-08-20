@@ -25,6 +25,12 @@ struct ProviderDetailView: View {
         store.reviews(for: provider.id)
     }
 
+    /// The people who work here. Shown only when there is a real choice to make.
+    private var specialists: [TeamMember] {
+        let roster = store.specialists(at: provider)
+        return roster.count > 1 ? roster : []
+    }
+
     private var distanceText: String? {
         ClientPersonalization
             .distance(to: provider, from: location.distanceReference)
@@ -38,6 +44,9 @@ struct ProviderDetailView: View {
                 header
                 about
                 information
+                if !specialists.isEmpty {
+                    team
+                }
                 reviewsSection
                 services
             }
@@ -233,6 +242,69 @@ struct ProviderDetailView: View {
             Image(systemName: accessory)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.inkSoft)
+        }
+        .frame(minHeight: 44)
+        .padding(.vertical, 8)
+        .contentShape(.rect)
+    }
+
+    // MARK: - Team
+
+    /// Who works here, and a direct way to book the one you trust.
+    ///
+    /// A client of this trade follows a person, not a salon, so choosing the master is
+    /// offered here as an entry point of its own — not buried inside the booking sheet.
+    private var team: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title: "Specialistai", accessory: "\(specialists.count)")
+            VStack(spacing: 0) {
+                ForEach(specialists) { member in
+                    Button {
+                        bookingFlow = BookingFlow(
+                            provider: provider,
+                            service: member.canPerform(activeService) ? activeService : nil,
+                            specialistName: member.name
+                        )
+                    } label: {
+                        specialistRow(member)
+                    }
+                    .buttonStyle(.plain)
+                    if member.id != specialists.last?.id {
+                        Divider().overlay(Palette.hairline)
+                    }
+                }
+            }
+            .cardSurface(padding: 16)
+        }
+        .padding(.horizontal, 20)
+    }
+
+    private func specialistRow(_ member: TeamMember) -> some View {
+        HStack(spacing: 12) {
+            SpecialistAvatar(member: member, size: 44)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(member.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.ink)
+                HStack(spacing: 5) {
+                    if let rating = member.ratingText {
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(Palette.marigold)
+                        Text(rating)
+                            .font(.caption.weight(.medium).monospacedDigit())
+                            .foregroundStyle(Palette.ink)
+                    }
+                    Text([member.craft, member.experienceText].compactMap { $0 }.joined(separator: " · "))
+                        .font(.caption)
+                        .foregroundStyle(Palette.inkSoft)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 8)
+            Text("Registruotis")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Palette.forest)
         }
         .frame(minHeight: 44)
         .padding(.vertical, 8)

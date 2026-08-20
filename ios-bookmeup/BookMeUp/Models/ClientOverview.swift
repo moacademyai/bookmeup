@@ -152,6 +152,22 @@ nonisolated enum LithuanianPlural {
         }
     }
 
+    static func year(_ count: Int) -> String {
+        switch form(count) {
+        case .one: "metai"
+        case .few: "metai"
+        case .many: "metų"
+        }
+    }
+
+    static func freeSlot(_ count: Int) -> String {
+        switch form(count) {
+        case .one: "laisvas laikas"
+        case .few: "laisvi laikai"
+        case .many: "laisvų laikų"
+        }
+    }
+
     static func result(_ count: Int) -> String {
         switch form(count) {
         case .one: "variantas"

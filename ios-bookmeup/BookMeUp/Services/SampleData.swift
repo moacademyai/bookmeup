@@ -46,12 +46,53 @@ nonisolated enum SampleData {
         )
     }
 
-    /// Specialists sharing the salon floor — the columns of the team calendar.
+    /// Specialists sharing the salon floor.
+    ///
+    /// The same four people are the columns of the team calendar and the choice a client
+    /// makes before picking a time. What each of them is allowed to perform is declared
+    /// here, so the client never sees a master who cannot do the service they chose.
     static let team: [TeamMember] = [
-        TeamMember(name: specialistName, craft: "Kirpėjas", isCurrentUser: true),
-        TeamMember(name: "Adas Jasiūnas", craft: "Barberis"),
-        TeamMember(name: "Rokas Abromavičius", craft: "Barberis"),
-        TeamMember(name: "Emilis Zupka", craft: "Koloristas")
+        TeamMember(
+            name: specialistName,
+            craft: "Kirpėjas",
+            isCurrentUser: true,
+            providerID: studioNomaID,
+            serviceNames: ["Kirpimas ir sušukavimas", "Kirpimas", "Barzdos tvarkymas"],
+            rating: 4.9,
+            reviewCount: 186,
+            yearsExperience: 11,
+            bio: "Dirbu su forma ir tekstūra. Niekada nenukerpu daugiau, nei sutarėme."
+        ),
+        TeamMember(
+            name: "Adas Jasiūnas",
+            craft: "Barberis",
+            providerID: studioNomaID,
+            serviceNames: ["Kirpimas", "Barzdos tvarkymas"],
+            rating: 4.8,
+            reviewCount: 124,
+            yearsExperience: 6,
+            bio: "Klasikiniai vyriški kirpimai, tikslūs kontūrai ir barzdos linija."
+        ),
+        TeamMember(
+            name: "Rokas Abromavičius",
+            craft: "Barberis",
+            providerID: studioNomaID,
+            serviceNames: ["Kirpimas", "Barzdos tvarkymas"],
+            rating: 4.7,
+            reviewCount: 68,
+            yearsExperience: 3,
+            bio: "Fade, mašinėlės darbai ir greitas kasdienis atnaujinimas."
+        ),
+        TeamMember(
+            name: "Emilis Zupka",
+            craft: "Koloristas",
+            providerID: studioNomaID,
+            serviceNames: ["Kirpimas ir sušukavimas"],
+            rating: 5.0,
+            reviewCount: 92,
+            yearsExperience: 8,
+            bio: "Spalva ir ilgi plaukai. Konsultacija visada prieš pirmą dažymą."
+        )
     ]
 
     /// Personal block presets shown next to the standard ones.
@@ -77,8 +118,12 @@ nonisolated enum SampleData {
         return hours
     }
 
+    /// The home venue's id, declared separately so the team can reference it before
+    /// the provider itself is built.
+    static let studioNomaID = UUID(uuidString: "11111111-1111-4111-8111-111111111111") ?? UUID()
+
     static let studioNoma = Provider(
-        id: UUID(uuidString: "11111111-1111-4111-8111-111111111111") ?? UUID(),
+        id: studioNomaID,
         name: "Studio Noma",
         specialistName: "Kipras Morkūnas",
         craft: "Kirpėjas",
